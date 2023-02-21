@@ -1,27 +1,25 @@
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { StatusBar } from 'expo-status-bar';
 import { useEffect, useState } from 'react';
-import { ActivityIndicator, Button, Pressable, Text, View } from 'react-native';
+import { useIsFocused } from '@react-navigation/native';
+import { ActivityIndicator, Pressable, Text, View } from 'react-native';
 import { pb } from '../lib/pb_client';
-import { RootStackParamList } from '../types/router';
+import type { NativeStackScreenProps } from '@react-navigation/native-stack';
+import type { RootStackParamList } from '../types/router';
+import type { Post } from '../types/post';
 
-type Post = {
-  id: string;
-  title: string;
-  text: string;
-};
+type Props = NativeStackScreenProps<RootStackParamList, 'Home'>;
 
-export default function HomeScreen({
-  navigation,
-}: NativeStackScreenProps<RootStackParamList, 'Home'>) {
+export default function HomeScreen({ navigation }: Props) {
+  const isFocused = useIsFocused();
   const [post, setPost] = useState<Post | null>(null);
 
   useEffect(() => {
+    setPost(null);
+
     pb.collection('posts')
       .getFirstListItem('', { $autoCancel: false })
       .then((post) => setPost(post as unknown as Post))
       .catch((err) => console.log(err));
-  }, []);
+  }, [isFocused]);
 
   if (!post) {
     return <ActivityIndicator className="mt-10" />;
@@ -36,7 +34,14 @@ export default function HomeScreen({
           Этот пост можно изменить в в закрытом разделе
         </Text>
       </View>
-      <Button onPress={() => navigation.navigate('Private')} title="Перейти в закрытый раздел" />
+      <View className="flex flex-row p-4 justify-end">
+        <Pressable
+          className="p-2 rounded-md bg-blue-500"
+          onPress={() => navigation.navigate('Private')}
+        >
+          <Text className="text-white">Перейти в закрытый раздел</Text>
+        </Pressable>
+      </View>
     </View>
   );
 }
