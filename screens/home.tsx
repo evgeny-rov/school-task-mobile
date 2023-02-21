@@ -31,7 +31,7 @@ export default function HomeScreen({ navigation }: Props) {
         <Text className="mb-4 text-xl font-bold">{post.title}</Text>
         <Text className="text-gray-600">{post.text}</Text>
         <Text className="mt-5 text-xs italic text-gray-500">
-          Этот пост можно изменить в в закрытом разделе
+          Этот пост можно изменить в закрытом разделе
         </Text>
       </View>
       <View className="flex flex-row p-4 justify-end">
